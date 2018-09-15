@@ -97,9 +97,9 @@ def main(filepath, version, major, minor, patch, from_git, tag, yes):
 
     # End step
     # add updated file to git
-    _git.add(filepath)
+    _git.git.add(filepath)
     # commit
-    _git.commit('[Pipver] Updated version to %s in %s.' % (new_version, filepath))
+    _git.git.commit('[Pipver] Updated version to %s in %s.' % (new_version, filepath))
     # tag
     _git.create_tag(new_version)
 

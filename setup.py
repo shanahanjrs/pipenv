@@ -19,7 +19,7 @@ requires = [
 
 setup(
     name='pipver',
-    version='0.1.1',
+    version='0.1.3',
     description='Python package versioning the right way.',
     author='John Shanahan',
     author_email='shanahan.jrs@gmail.com',
