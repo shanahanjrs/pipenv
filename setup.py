@@ -19,6 +19,12 @@ requires = [
 
 setup(
     name='pipver',
+    version='0.1.1',
+    description='Python package versioning the right way.',
+    author='John Shanahan',
+    author_email='shanahan.jrs@gmail.com',
+    url='https://github.com/shanahanjrs/pipver',
+    include_package_data=True,
     install_requires=requires,
-    scripts=['scripts/pipenv'],
+    scripts=['scripts/pipver'],
 )
