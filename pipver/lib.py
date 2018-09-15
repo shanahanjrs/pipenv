@@ -90,9 +90,6 @@ def modify_file_with_new_version_string(file, old, new):
     """
     Takes a file path and the old and new version strings to do a replacement
     """
-    print('file: %s' % file)
-    print('old: %s' % old)
-    print('new: %s' % new)
     with open(file, 'r') as f:
         file_contents = f.read()
 

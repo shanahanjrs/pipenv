@@ -39,7 +39,7 @@ def bye(message='%sExiting...' % f, exit_code=1):
 @click.option('--patch', default=True, help='Increment the version Patch (This is the default).')
 @click.option('--from-git', default=False, help='Check the latest git tag for the version string.')
 @click.option('--tag', default=True, help='Tag the commit with the generated version.')
-@click.option('--yes', default=False, help='Always answer Yes when prompted with a Y/n question.')
+@click.option('--yes', is_flag=True, default=False, help='Always answer Yes when prompted with a Y/n question.')
 def main(filepath, version, major, minor, patch, from_git, tag, yes):
     """
     main
@@ -96,14 +96,14 @@ def main(filepath, version, major, minor, patch, from_git, tag, yes):
     modify_file_with_new_version_string(filepath, old_version_str, new_version)
 
     # End step
-    # add updated file to git
-    _git.git.add(filepath)
-    # commit
-    _git.git.commit('-m "[Pipver] Updated version to %s in %s."' % (new_version, filepath))
-    # tag
-    _git.create_tag(new_version)
+    # add/commit/tag updated file to git
+    if tag:
+        _git.git.add(filepath)
+        _git.git.commit('-m "[Pipver] Updated version to %s in %s."' % (new_version, filepath))
+        _git.create_tag(new_version)
 
     bye('%sDone!' % f, 0)
+
 
 if __name__ == '__main__':
     main()
