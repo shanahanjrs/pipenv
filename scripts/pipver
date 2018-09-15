@@ -95,6 +95,14 @@ def main(filepath, version, major, minor, patch, from_git, tag, yes):
 
     modify_file_with_new_version_string(filepath, old_version_str, new_version)
 
+    # End step
+    # add updated file to git
+    _git.add(filepath)
+    # commit
+    _git.commit('[Pipver] Updated version to %s in %s.' % (new_version, filepath))
+    # tag
+    _git.create_tag(new_version)
+
     bye('%sDone!' % f, 0)
 
 if __name__ == '__main__':
