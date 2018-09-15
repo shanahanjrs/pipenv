@@ -18,9 +18,8 @@ from colorama import Fore, Style
 
 import sys
 
-# Set the green lambda to be used by each line
-def lprint(to_print):
-    print(Fore.GREEN + 'λ' + Style.RESET_ALL + ' ' + to_print)
+# lambda
+f = '%sλ%s ' % (Fore.GREEN, Style.RESET_ALL)
 
 # inputs
 #  - filename (look for if not specified)
@@ -41,16 +40,9 @@ def main(filepath, version, major, minor, patch, yes):
     """
     main
     """
-    lprint('inputs:')
-    lprint('filepath: %s' % filepath)
-    lprint('version: %s' % version)
-    lprint('major: %s' % major)
-    lprint('minor: %s' % minor)
-    lprint('patch: %s' % patch)
-    lprint('yes: %s' % yes)
 
     # Find current version
-    lprint('Searching for version string...')
+    print('%sSearching for version string...' % f)
     if filepath:
         old_version_str = search_file_for_valid_semver(file)
         if not version:
@@ -61,20 +53,19 @@ def main(filepath, version, major, minor, patch, yes):
         )
     
     old_version = SemanticVersion(old_version_str)
-    lprint('Found current version: %s%s%s' % (Fore.CYAN, old_version, Style.RESET_ALL))
+    print('%sFound current version: %s%s%s' % (f, Fore.CYAN, old_version, Style.RESET_ALL))
 
     # Now bump the version...
     if version:
         # If a --version string was specified use that
         if not is_valid_semver(version):
-            lprint('WARNING: %s%s%s is not valid, use anyway?' % (Fore.RED, version, Style.RESET_ALL))
+            print('%sWARNING: %s%s%s is not valid, use anyway?' % (f, Fore.RED, version, Style.RESET_ALL))
             if input('Keep? %s[yes]>%s ' % (Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
-                lprint('Exiting...')
+                print('%sExiting...' % f)
                 sys.exit(1)
         new_version = version
     else:
         # If a --version was not specified then use one of these
-        lprint('No --version specified, generating one...')
         if major:
             new_version = old_version.increment_major()
         elif minor:
@@ -85,17 +76,17 @@ def main(filepath, version, major, minor, patch, yes):
             raise ValueError('No proper version argument was specified [--version, --major, --minor, --patch]')
     
     # New version string Ok?
-    lprint('New version to be written: %s%s%s' % (Fore.CYAN, new_version, Style.RESET_ALL))
+    print('%sNew version to be written: %s%s%s' % (f, Fore.CYAN, new_version, Style.RESET_ALL))
 
     if not yes:
         # Ask to use the new version string if they havent specified --yes
         if input('Keep? %s[yes]>%s ' % (Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
-            lprint('Exiting...')
+            print('%sExiting...' % f)
             sys.exit(1)
 
     modify_file_with_new_version_string(filepath, old_version_str, new_version)
 
-    lprint('Done!')
+    print('%sDone!' % f)
 
 if __name__ == '__main__':
     main()

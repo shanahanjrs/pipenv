@@ -90,8 +90,14 @@ def modify_file_with_new_version_string(file, old, new):
     """
     Takes a file path and the old and new version strings to do a replacement
     """
-    with open(file, 'rw') as f:
+    print('file: %s' % file)
+    print('old: %s' % old)
+    print('new: %s' % new)
+    with open(file, 'r') as f:
         file_contents = f.read()
-        if old in file_contents:
-            file_contents.replace(old, new)
+
+    if old in file_contents:
+        file_contents = file_contents.replace(old, new)
+    
+    with open(file, 'w') as f:
         f.write(file_contents)
