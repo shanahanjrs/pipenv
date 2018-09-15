@@ -12,7 +12,7 @@ TODO:
   - TESTS
   - add a license
   - update readme
-  - push to pypi
+  - push to pypi ?
 """
 
 from pipver.lib import *
