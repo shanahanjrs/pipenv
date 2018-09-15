@@ -43,7 +43,7 @@ class SemanticVersion():
         self.patch = int(self.version_split[2])
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, version_str)
+        return '%s(%s)' % (self.__class__.__name__, self.__str__())
 
     def __str__(self):
         ret = ''
@@ -94,4 +94,4 @@ class SemanticVersion():
         """
         increment the release candidate iteration
         """
-
+        pass

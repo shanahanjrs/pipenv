@@ -6,28 +6,30 @@ pipver
 author: John Shanahan <shanahan.jrs@gmail.com>
 
 TODO:
-  - Fix giant run on main()
+  - Fix giant run-on main()
   - git support
+  - git tag
+  - TESTS
+  - add a license
+  - update readme
+  - push to pypi
 """
 
 from pipver.lib import *
 from pipver.semanticversion import SemanticVersion
 
 import click
+from git import Repo
 from colorama import Fore, Style
 
 import sys
 
-# lambda
+# lambda print
 f = '%sλ%s ' % (Fore.GREEN, Style.RESET_ALL)
 
-# inputs
-#  - filename (look for if not specified)
-#  - version (increment is not specified)
-#  - major
-#  - minor
-#  - patch
-#  - git (in a future release)
+def bye(message='%sExiting...' % f, exit_code=1):
+    print(message)
+    sys.exit(exit_code)
 
 @click.command()
 @click.option('--filepath', default=False, help='Name of file containing the version variable/string.')
@@ -35,18 +37,27 @@ f = '%sλ%s ' % (Fore.GREEN, Style.RESET_ALL)
 @click.option('--major', default=False, help='Increment the version Major.')
 @click.option('--minor', default=False, help='Increment the version Minor.')
 @click.option('--patch', default=True, help='Increment the version Patch (This is the default).')
+@click.option('--from-git', default=False, help='Check the latest git tag for the version string.')
+@click.option('--tag', default=True, help='Tag the commit with the generated version.')
 @click.option('--yes', default=False, help='Always answer Yes when prompted with a Y/n question.')
-def main(filepath, version, major, minor, patch, yes):
+def main(filepath, version, major, minor, patch, from_git, tag, yes):
     """
     main
     """
+    # init git
+    _git = Repo()
+
+    # Make sure they know git repo isnt clean
+    if _git.is_dirty():
+        if input('%sGit repo not clean, continue? %s[yes]>%s ' % (f, Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
+            bye()
 
     # Find current version
     print('%sSearching for version string...' % f)
     if filepath:
-        old_version_str = search_file_for_valid_semver(file)
-        if not version:
-            raise ValueError('No valid semver string found in file %s' % file)
+        old_version_str = search_file_for_valid_semver(filepath)
+        if not old_version_str:
+            raise ValueError('No valid semver string found in file %s' % filepath)
     else:
         old_version_str, filepath = search_each_existing_file(
             search_for_possible_files()
@@ -61,8 +72,7 @@ def main(filepath, version, major, minor, patch, yes):
         if not is_valid_semver(version):
             print('%sWARNING: %s%s%s is not valid, use anyway?' % (f, Fore.RED, version, Style.RESET_ALL))
             if input('Keep? %s[yes]>%s ' % (Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
-                print('%sExiting...' % f)
-                sys.exit(1)
+                bye()
         new_version = version
     else:
         # If a --version was not specified then use one of these
@@ -81,12 +91,11 @@ def main(filepath, version, major, minor, patch, yes):
     if not yes:
         # Ask to use the new version string if they havent specified --yes
         if input('Keep? %s[yes]>%s ' % (Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
-            print('%sExiting...' % f)
-            sys.exit(1)
+            bye()
 
     modify_file_with_new_version_string(filepath, old_version_str, new_version)
 
-    print('%sDone!' % f)
+    bye('%sDone!' % f, 0)
 
 if __name__ == '__main__':
     main()
