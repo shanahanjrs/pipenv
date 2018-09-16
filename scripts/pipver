@@ -38,9 +38,10 @@ def bye(message='%sExiting...' % f, exit_code=1):
 @click.option('--minor', default=False, help='Increment the version Minor.')
 @click.option('--patch', default=True, help='Increment the version Patch (This is the default).')
 @click.option('--from-git', default=False, help='Check the latest git tag for the version string.')
-@click.option('--tag', default=True, help='Tag the commit with the generated version.')
+@click.option('--dont-tag', default=False, help='Skip tagging the commit with the generated version.')
 @click.option('--yes', is_flag=True, default=False, help='Always answer Yes when prompted with a Y/n question.')
-def main(filepath, version, major, minor, patch, from_git, tag, yes):
+@click.option('--publish', is_flag=True, default=False, help='Build and publish your package to PyPi')
+def main(filepath, version, major, minor, patch, from_git, dont_tag, yes, publish):
     """
     main
     """
@@ -49,8 +50,10 @@ def main(filepath, version, major, minor, patch, from_git, tag, yes):
 
     # Make sure they know git repo isnt clean
     if _git.is_dirty():
-        if input('%sGit repo not clean, continue? %s[yes]>%s ' % (f, Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
-            bye()
+        if not yes:
+            # if --yes was not specified prompt for an answer
+            if input('%sGit repo not clean, continue? %s[yes]>%s ' % (f, Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
+                bye()
 
     # Find current version
     print('%sSearching for version string...' % f)
@@ -70,9 +73,11 @@ def main(filepath, version, major, minor, patch, from_git, tag, yes):
     if version:
         # If a --version string was specified use that
         if not is_valid_semver(version):
-            print('%sWARNING: %s%s%s is not valid, use anyway?' % (f, Fore.RED, version, Style.RESET_ALL))
-            if input('Keep? %s[yes]>%s ' % (Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes':
-                bye()
+            if not yes:
+                # if --yes was not specified prompt for an answer
+                print('%sWARNING: %s%s%s is not valid, use anyway?' % (f, Fore.RED, version, Style.RESET_ALL))
+                if input('Keep? %s[yes]>%s ' % (Fore.YELLOW, Style.RESET_ALL)).lower() != 'yes' or not yes:
+                    bye()
         new_version = version
     else:
         # If a --version was not specified then use one of these
@@ -95,13 +100,16 @@ def main(filepath, version, major, minor, patch, from_git, tag, yes):
 
     modify_file_with_new_version_string(filepath, old_version_str, new_version)
 
-    # End step
     # add/commit/tag updated file to git
-    if tag:
+    if dont_tag:
+        # Skip the git tagging process
+        pass
+    else:
         _git.git.add(filepath)
         _git.git.commit('-m "[Pipver] Updated version to %s in %s."' % (new_version, filepath))
         _git.create_tag(new_version)
 
+    # Done
     bye('%sDone!' % f, 0)
 
 
