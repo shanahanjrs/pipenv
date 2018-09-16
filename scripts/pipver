@@ -31,6 +31,13 @@ def bye(message='%sExiting...' % f, exit_code=1):
     print(message)
     sys.exit(exit_code)
 
+def publish_to_pypi():
+    print('%s Building package for Pypi...' % f)
+    os.system('python setup.py sdist bdist_wheel')
+    print('%s Uploading to Pypi...' % f)
+    os.system('twine upload dist/*')
+    bye(exit_code=1)
+
 @click.command()
 @click.option('--filepath', default=False, help='Name of file containing the version variable/string.')
 @click.option('--version', default=False, help='SemVer string of the new version to use.')
@@ -45,6 +52,10 @@ def main(filepath, version, major, minor, patch, from_git, dont_tag, yes, publis
     """
     main
     """
+    # Publish to Pypi
+    if publish:
+        return publish_to_pypi()
+
     # init git
     _git = Repo()
 
