@@ -11,10 +11,14 @@ requires = [
     'click'
 ]
 
+with open('README.md', 'r', 'utf-8') as f:
+    readme = f.read()
+
 setup(
     name='pipver',
     version='0.1.7',
     description='Python package versioning the right way.',
+    long_description=readme,
     author='John Shanahan',
     author_email='shanahan.jrs@gmail.com',
     url='https://github.com/shanahanjrs/pipver',
