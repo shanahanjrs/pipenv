@@ -11,8 +11,9 @@ url = "https://pypi.python.org/simple"
 
 [packages]
 
-click = "*"
+gitpython = "*"
 colorama = "*"
+click = "*"
 
 
 [requires]
