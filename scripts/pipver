@@ -8,11 +8,9 @@ author: John Shanahan <shanahan.jrs@gmail.com>
 TODO:
   - Fix giant run-on main()
   - git support
-  - git tag
   - TESTS
   - add a license
   - update readme
-  - push to pypi ?
 """
 
 from pipver.lib import *
@@ -45,10 +43,11 @@ def publish_to_pypi():
 @click.option('--minor', default=False, help='Increment the version Minor.')
 @click.option('--patch', default=True, help='Increment the version Patch (This is the default).')
 @click.option('--from-git', default=False, help='Check the latest git tag for the version string.')
-@click.option('--dont-tag', default=False, help='Skip tagging the commit with the generated version.')
+@click.option('--dont-tag', is_flag=True, default=False, help='Skip tagging the commit with the generated version.')
+@click.option('--git-push', is_flag=True, default=False, help='Also perform a `git push` after tagging.')
 @click.option('--yes', is_flag=True, default=False, help='Always answer Yes when prompted with a Y/n question.')
 @click.option('--publish', is_flag=True, default=False, help='Build and publish your package to PyPi')
-def main(filepath, version, major, minor, patch, from_git, dont_tag, yes, publish):
+def main(filepath, version, major, minor, patch, from_git, dont_tag, git_push, yes, publish):
     """
     main
     """
@@ -114,11 +113,15 @@ def main(filepath, version, major, minor, patch, from_git, dont_tag, yes, publis
     # add/commit/tag updated file to git
     if dont_tag:
         # Skip the git tagging process
-        pass
+        if git_push:
+            print('%s Skipping `git push` since we aren\'t tagging the commit...')
     else:
         _git.git.add(filepath)
         _git.git.commit('-m "[Pipver] Updated version to %s in %s."' % (new_version, filepath))
         _git.create_tag(new_version)
+
+        if git_push:
+            _git.git.push('-u origin')
 
     # Done
     bye('%sDone!' % f, 0)
