@@ -8,6 +8,7 @@ from setuptools import setup
 
 requires = [
     'gitpython',
+    'colorama',
     'click'
 ]
 
