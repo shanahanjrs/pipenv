@@ -121,7 +121,7 @@ def main(filepath, version, major, minor, patch, from_git, dont_tag, git_push, y
         _git.create_tag(new_version)
 
         if git_push:
-            _git.git.push('-u origin/%s' % _git.active_branch.name)
+            _git.git.push('-u origin %s' % _git.active_branch.name)
 
     # Done
     bye('%sDone!' % f, 0)
