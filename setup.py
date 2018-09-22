@@ -17,7 +17,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pipver',
-    version='0.1.10',
+    version='0.1.11',
     description='Python package versioning the right way.',
     long_description=readme,
     author='John Shanahan',
