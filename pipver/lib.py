@@ -28,11 +28,15 @@ def possible_file_paths():
     # This will get current dir name
     # Useful because we need to be in the package repos root dir
     # and the source should be in another dir with the same name
-    dir = os.path.basename(os.getcwd())
+    pkg_name = os.path.basename(os.getcwd())
     
     return [
-        '%s/_version.py' % dir,
-        '%s/__init__.py' % dir,
+        '%s/_version.py' % pkg_name,
+        '%s/VERSION'     % pkg_name,
+        '%s/VERSION.py'  % pkg_name,
+        '%s/VERSION.txt' % pkg_name,
+        '%s/__init__.py' % pkg_name,
+        '_version.py',
         'VERSION',
         'VERSION.py',
         'VERSION.txt',
