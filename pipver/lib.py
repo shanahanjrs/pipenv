@@ -100,5 +100,5 @@ def modify_file_with_new_version_string(file, old, new):
     if old in file_contents:
         file_contents = file_contents.replace(old, new, 1)
     
-    with open(file, 'w') as f:
-        f.write(file_contents)
+        with open(file, 'w') as f:
+            f.write(file_contents)
