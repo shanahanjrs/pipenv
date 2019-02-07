@@ -27,7 +27,7 @@ Features:
  Installation
  ------------
 
-    $ pip install pipenv
+    $ pip install pipver
 
 Contributing:
 -------------
