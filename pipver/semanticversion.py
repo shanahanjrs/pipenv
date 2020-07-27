@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+
 class SemanticVersion():
     """
     object for manipulating a semver string
     """
-
     def __init__(self, version_str):
         self.version_str = version_str
 
@@ -54,7 +54,7 @@ class SemanticVersion():
             str(self.patch),
         ]
         ret += '.'.join(ver)
-        
+
         if self.extension:
             ret += '-%s' % self.extension
 
@@ -89,7 +89,7 @@ class SemanticVersion():
         self.patch += 1
         self.extension = None  # Reset ext
         return self.__str__()
-    
+
     def increment_rc(self):
         """
         increment the release candidate iteration

@@ -6,11 +6,7 @@ import sys
 
 from setuptools import setup
 
-requires = [
-    'gitpython',
-    'colorama',
-    'click'
-]
+requires = ['gitpython', 'colorama', 'click']
 
 with open('README.md', 'r') as f:
     readme = f.read()
