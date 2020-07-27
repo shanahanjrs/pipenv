@@ -14,6 +14,7 @@ class SemanticVersion:
     object for manipulating a semver string
     """
     def __init__(self, version_str):
+        self.re_pattern = '(\d+)(?!.*\d)'    # Grab the last numeric digits of a given string
         self.version_str = version_str
         self.build_num = ''
         self.extension = ''
@@ -68,6 +69,22 @@ class SemanticVersion:
 
         return ret
 
+    def inc(self):
+        """
+        Will find the "lowest" part of the current semver and increment it automatically.
+        If there is a build number that will be inc, then an extension like a release candidate, then the patch
+        Ex:
+          1.0.0-rc1+33 -> 1.0.0-rc1+34
+          1.0.0-rc1 -> 1.0.0-rc2
+          1.0.0 -> 1.0.1
+        """
+        if self.build_num:
+            return self.increment_build()
+        if self.extension:
+            return self.increment_extension()
+
+        return self.increment_patch()
+
     def increment_major(self):
         """
         increment Major, reset minor, patch, ext
@@ -102,18 +119,41 @@ class SemanticVersion:
         """
         increment the release candidate iteration
         """
-        re_pattern = '(\d+)(?!.*\d)'
 
-        match = re.search(re_pattern, self.extension)
+        match = re.search(self.re_pattern, self.extension)
 
-        if not match:
-            return
+        if match:
+            # If the semver extension had a build/rc/etc number we cast to int, increment, then back to str
+            ext_num = str(int(match.group(0)) + 1)
 
-        # If the semver extension had a build/rc/etc number we cast to int, increment, then back to str
-        ext_num = str(int(match.group(0)) + 1)
+            # Match the pattern
+            self.extension = re.sub(self.re_pattern, ext_num, self.extension)
 
-        # Match the pattern
-        self.extension = re.sub(re_pattern, ext_num, self.extension)
+            self.build_num = ''    # Reset build
 
-        self.build_num = ''    # Reset build
+        else:
+            if not self.extension:
+                # If no match and no current extension exists create a default one
+                self.extension = 'rc1'
+
+        return self.__str__()
+
+    def increment_build(self):
+        """
+        Same as increment_extension but for the build number
+        """
+        match = re.search(self.re_pattern, self.build_num)
+
+        if match:
+            # If the semver extension had a build/rc/etc number we cast to int, increment, then back to str
+            ext_num = str(int(match.group(0)) + 1)
+
+            # Match the pattern
+            self.build_num = re.sub(self.re_pattern, ext_num, self.build_num)
+
+        else:
+            if not self.build_num:
+                # If no match and no current build num exists create a default one
+                self.build_num = '1'
+
         return self.__str__()
