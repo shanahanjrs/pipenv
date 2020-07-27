@@ -29,13 +29,6 @@ def bye(message='%sExiting...' % f, exit_code=1):
     print(message)
     sys.exit(exit_code)
 
-def publish_to_pypi():
-    print('%s Building package for Pypi...' % f)
-    os.system('python setup.py sdist bdist_wheel')
-    print('%s Uploading to Pypi...' % f)
-    os.system('twine upload dist/*')
-    bye(exit_code=1)
-
 @click.command()
 @click.option('--filepath', default=False, help='Name of file containing the version variable/string.')
 @click.option('--version', default=False, help='SemVer string of the new version to use.')
@@ -46,15 +39,10 @@ def publish_to_pypi():
 @click.option('--dont-tag', is_flag=True, default=False, help='Skip tagging the commit with the generated version.')
 @click.option('--git-push', is_flag=True, default=False, help='Also perform a `git push` after tagging.')
 @click.option('--yes', is_flag=True, default=False, help='Always answer Yes when prompted with a Y/n question.')
-@click.option('--publish', is_flag=True, default=False, help='Build and publish your package to PyPi')
-def main(filepath, version, major, minor, patch, from_git, dont_tag, git_push, yes, publish):
+def main(filepath, version, major, minor, patch, from_git, dont_tag, git_push, yes):
     """
     main
     """
-    # Publish to Pypi
-    if publish:
-        return publish_to_pypi()
-
     # init git
     _git = Repo()
 
