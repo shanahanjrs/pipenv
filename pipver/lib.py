@@ -32,12 +32,17 @@ def possible_file_paths():
     pkg_name = os.path.basename(os.getcwd())
 
     return [
+        'pyproject.toml',
+        'VERSION.txt',
+        'setup.py',
         '%s/_version.py' % pkg_name,
         '%s/VERSION' % pkg_name,
         '%s/VERSION.py' % pkg_name,
         '%s/VERSION.txt' % pkg_name,
-        '%s/__init__.py' % pkg_name, '_version.py', 'VERSION', 'VERSION.py',
-        'VERSION.txt', 'setup.py'
+        '%s/__init__.py' % pkg_name,
+        '_version.py',
+        'VERSION',
+        'VERSION.py',
     ]
 
 
