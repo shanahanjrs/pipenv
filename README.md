@@ -21,7 +21,6 @@ Features:
  - Git tag integration for CI and releases
  - Completely customizable if you have a different workflow
  - Promptless run, just use the _--yes_ flag and it can run anywhere
- - Publish your package to Pypi right after running with the _--publish_ flag
 
 
  Installation
