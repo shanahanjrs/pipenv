@@ -35,11 +35,13 @@ def bye(message='%sExiting...' % f, exit_code=1):
 @click.option('--major', default=False, help='Increment the version Major.')
 @click.option('--minor', default=False, help='Increment the version Minor.')
 @click.option('--patch', default=True, help='Increment the version Patch (This is the default).')
+@click.option('--extension', default=True, help='Increment the version Extension.')
+@click.option('--build', default=True, help='Increment the version Build.')
 @click.option('--from-git', default=False, help='Check the latest git tag for the version string.')
 @click.option('--dont-tag', is_flag=True, default=False, help='Skip tagging the commit with the generated version.')
 @click.option('--git-push', is_flag=True, default=False, help='Also perform a `git push` after tagging.')
 @click.option('--yes', is_flag=True, default=False, help='Always answer Yes when prompted with a Y/n question.')
-def main(filepath, version, major, minor, patch, from_git, dont_tag, git_push, yes):
+def main(filepath, version, major, minor, patch, extension, build, from_git, dont_tag, git_push, yes):
     """
     main
     """
@@ -85,9 +87,13 @@ def main(filepath, version, major, minor, patch, from_git, dont_tag, git_push, y
             new_version = old_version.increment_minor()
         elif patch:
             new_version = old_version.increment_patch()
+        elif extension:
+            new_version = old_version.increment_extension()
+        elif build:
+            new_version = old_version.increment_build()
         else:
-            raise ValueError('No proper version argument was specified [--version, --major, --minor, --patch]')
-    
+            new_version = old_version.inc()
+
     # New version string Ok?
     print('%sNew version to be written: %s%s%s' % (f, Fore.CYAN, new_version, Style.RESET_ALL))
 
