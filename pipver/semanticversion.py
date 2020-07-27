@@ -6,6 +6,8 @@ semanticversion.py
 custom object to represent a semver and easily modify them.
 """
 
+import re
+
 
 class SemanticVersion:
     """
@@ -13,33 +15,30 @@ class SemanticVersion:
     """
     def __init__(self, version_str):
         self.version_str = version_str
+        self.build_num = ''
+        self.extension = ''
+        self.major = 0
+        self.minor = 0
+        self.patch = 0
 
         # Grab build data if included
-        # Looks like <...>+<build_data>
+        # Looks like 1.0.0+1234
         if '+' in version_str:
             self.version_str = version_str.split('+')[0]
-            self.build_num = version_str.split('+')[-1]
-        else:
-            self.build_num = None
+            self.build_num = version_str.split('+')[1]
 
         # Separate the main version from the extension
+        # Can be:
+        #  -rc
+        #  -rc.N
+        #  -alpha
+        #  -alpha.N
+        #  -alpha.beta
+        #  -beta
+        #  -beta.N
         if '-' in version_str:
-            # extension present: split on '-' and take second half
-            # *Can only increment the last number in the extension if it is a digit
-            # Can be:
-            #  -rc
-            #  -rc.N
-            #  -alpha
-            #  -alpha.N
-            #  -alpha.beta
-            #  -beta
-            #  -beta.N
-            self.version = version_str.split('-')[0]
-            self.extension = version_str.split('-')[-1]
-        else:
-            # No extension found, no need to split it off
-            self.version = version_str
-            self.extension = None
+            self.version = self.version_str.split('-')[0]
+            self.extension = self.version_str.split('-')[-1]
 
         # Take the main Version string without extension and pull Major, Minor, Patch out
         self.version_split = self.version.split('.')
@@ -52,7 +51,6 @@ class SemanticVersion:
 
     def __str__(self):
         ret = ''
-        # todo: support extension
         ver = [
             str(self.major),
             str(self.minor),
@@ -70,33 +68,49 @@ class SemanticVersion:
 
     def increment_major(self):
         """
-        increment Major, reset minor and patch to zero
+        increment Major, reset minor, patch, ext
         """
         self.major += 1
         self.minor = 0
         self.patch = 0
-        self.extension = None    # Reset ext
+        self.extension = ''
+        self.build_num = ''
         return self.__str__()
 
     def increment_minor(self):
         """
-        increment Minor, keep Major, reset Patch
+        increment Minor, keep Major, reset Patch and ext
         """
         self.minor += 1
         self.patch = 0
-        self.extension = None    # Reset ext
+        self.extension = ''
+        self.build_num = ''
         return self.__str__()
 
     def increment_patch(self):
         """
-        increment Patch, keep Major and Minor
+        increment Patch, keep Major and Minor, reset ext
         """
         self.patch += 1
-        self.extension = None    # Reset ext
+        self.extension = ''
+        self.build_num = ''
         return self.__str__()
 
-    def increment_rc(self):
+    def increment_extension(self):
         """
         increment the release candidate iteration
         """
-        pass
+        re_pattern = '(\d+)(?!.*\d)'
+
+        match = re.search(re_pattern, self.extension)
+
+        if not match:
+            return
+
+        # If the semver extension had a build/rc/etc number we cast to int, increment, then back to str
+        ext_num = str(int(match.group(0)) + 1)
+
+        # Match the pattern
+        self.extension = re.sub(re_pattern, ext_num, self.extension)
+
+        self.build_num = ''    # Reset build

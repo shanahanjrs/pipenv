@@ -1,7 +1,7 @@
 [tool.poetry]
-license = "GPL-3.0-or-later"
 name = "pipver"
-version = "0.1.0"
+version = "0.1.8"
+license = "GPL-3.0-or-later"
 description = "Python package versioning made easy"
 authors = ["John Shanahan <shanahan.jrs@gmail.com>"]
 
