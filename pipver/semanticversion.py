@@ -23,9 +23,10 @@ class SemanticVersion:
 
         # Grab build data if included
         # Looks like 1.0.0+1234
-        if '+' in version_str:
-            self.version_str = version_str.split('+')[0]
-            self.build_num = version_str.split('+')[1]
+        if '+' in self.version_str:
+            _ = self.version_str.split('+')
+            self.version_str = _[0]
+            self.build_num = _[1]
 
         # Separate the main version from the extension
         # Can be:
@@ -36,15 +37,16 @@ class SemanticVersion:
         #  -alpha.beta
         #  -beta
         #  -beta.N
-        if '-' in version_str:
-            self.version = self.version_str.split('-')[0]
-            self.extension = self.version_str.split('-')[-1]
+        if '-' in self.version_str:
+            _ = self.version_str.split('-')
+            self.version_str = _[0]
+            self.extension = _[1]
 
         # Take the main Version string without extension and pull Major, Minor, Patch out
-        self.version_split = self.version.split('.')
-        self.major = int(self.version_split[0])
-        self.minor = int(self.version_split[1])
-        self.patch = int(self.version_split[2])
+        _ = self.version_str.split('.')
+        self.major = int(_[0])
+        self.minor = int(_[1])
+        self.patch = int(_[2])
 
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
@@ -114,3 +116,4 @@ class SemanticVersion:
         self.extension = re.sub(re_pattern, ext_num, self.extension)
 
         self.build_num = ''    # Reset build
+        return self.__str__()
