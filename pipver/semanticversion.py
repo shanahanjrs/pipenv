@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
+"""
+semanticversion.py
+
+custom object to represent a semver and easily modify them.
+"""
 
 
-class SemanticVersion():
+class SemanticVersion:
     """
     object for manipulating a semver string
     """
@@ -70,7 +75,7 @@ class SemanticVersion():
         self.major += 1
         self.minor = 0
         self.patch = 0
-        self.extension = None  # Reset ext
+        self.extension = None    # Reset ext
         return self.__str__()
 
     def increment_minor(self):
@@ -79,7 +84,7 @@ class SemanticVersion():
         """
         self.minor += 1
         self.patch = 0
-        self.extension = None  # Reset ext
+        self.extension = None    # Reset ext
         return self.__str__()
 
     def increment_patch(self):
@@ -87,7 +92,7 @@ class SemanticVersion():
         increment Patch, keep Major and Minor
         """
         self.patch += 1
-        self.extension = None  # Reset ext
+        self.extension = None    # Reset ext
         return self.__str__()
 
     def increment_rc(self):
